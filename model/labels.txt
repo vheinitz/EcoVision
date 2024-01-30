@@ -1,0 +1,4 @@
+0 Can
+1 Tetrapack
+2 Empty
+3 Battery
