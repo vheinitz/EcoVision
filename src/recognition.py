@@ -4,10 +4,10 @@ from keras.models import load_model
 import numpy as np
 
 # Load the model
-model = load_model("C:/Users/Emily/Documents/JuFo2023/JuFo2023Emily/model/keras_model.h5", compile=False)
+model = load_model("../model/keras_model.h5", compile=False)
 
 # Load the labels
-class_names = open("C:/Users/Emily/Documents/JuFo2023/JuFo2023Emily/model/labels.txt", "r").readlines()
+class_names = open("../model/labels.txt", "r").readlines()
 
 # Initialize the camera
 cap = cv2.VideoCapture(1)
