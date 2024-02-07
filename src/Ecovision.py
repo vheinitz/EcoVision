@@ -4,7 +4,7 @@ from keras.models import load_model
 import numpy as np
 from recognition import Detector
 
-bandController = '/dev/ttyACM0'
+bandController =  'com3'   # '/dev/ttyACM0'
 kameraID = 1
 
 try:
