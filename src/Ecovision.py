@@ -1,7 +1,6 @@
 import cv2
 import serial
 from keras.models import load_model
-#from PIL import Image, ImageOps
 import numpy as np
 from recognition import Detector
 
