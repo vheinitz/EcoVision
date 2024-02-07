@@ -26,13 +26,6 @@ except:
     exit(2)
 
 
-#Modelpfad
-model = load_model("../model/keras_model.h5", compile=False)
-
-
-
-# Load the labels
-class_names = open("../model/labels.txt", "r").readlines()
 detector = Detector("../model/keras_model.h5", "../model/labels.txt")
 
 
