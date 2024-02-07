@@ -1,66 +1,45 @@
 import cv2
 from keras.models import load_model
-#from PIL import Image, ImageOps
 import numpy as np
 
-# Load the model
-model = load_model("../model/keras_model.h5", compile=False)
 
-# Load the labels
-class_names = open("../model/labels.txt", "r").readlines()
+class Detector:
+    def __init__(self, model_path, labels_path):
+        """
+        Initialize the Object Detector with a model and labels.
+        Args:
+            model_path (str): Path to the model file.
+            labels_path (str): Path to the labels file.
+        """
+        self.model = load_model(model_path, compile=False)
+        self.class_names = open(labels_path, "r").readlines()
 
-# Initialize the camera
-cap = cv2.VideoCapture(1)
+    def detect(self, frame):
+        # Resize the frame to 224x224
+        resized_frame = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_LANCZOS4)
 
-# Check if the camera opened successfully
-if not cap.isOpened():
-    print("Error: Could not open camera.")
-    exit()
+        # Convert the image to a numpy array and normalize it
+        # OpenCV captures images in BGR format by default
+        normalized_image_array = (resized_frame.astype(np.float32) / 127.5) - 1
 
-while True:
-    # Capture frame-by-frame
-    ret, flipped_frame = cap.read()
-    frame = cv2.flip(flipped_frame, 1)
+        # Load the image into the array
+        data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+        data[0] = normalized_image_array
 
-    if not ret:
-        print("Error: Can't receive frame (stream end?). Exiting ...")
-        break
+        # Load the image into the array
+        data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
+        data[0] = normalized_image_array
 
-    # Resize the frame to 224x224
-    resized_frame = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_LANCZOS4)
+        # Predicts the model
+        prediction = self.model.predict(data)
+        index = np.argmax(prediction)
+        class_name = self.class_names[index].strip()
+        confidence_score = prediction[0][index]
+        return (class_name, confidence_score)
 
-    # Convert the image to a numpy array and normalize it
-    # OpenCV captures images in BGR format by default
-    normalized_image_array = (resized_frame.astype(np.float32) / 127.5) - 1
 
-    # Load the image into the array
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-    data[0] = normalized_image_array
+if __name__ == "__main__":
 
-    # Convert the image to a numpy array and normalize it
-    #image_array = np.asarray(pil_image)
-    #normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
+    d = Detector("../model/keras_model.h5", "../model/labels.txt")
 
-    # Load the image into the array
-    data = np.ndarray(shape=(1, 224, 224, 3), dtype=np.float32)
-    data[0] = normalized_image_array
-
-    # Predicts the model
-    prediction = model.predict(data)
-    index = np.argmax(prediction)
-    class_name = class_names[index].strip()
-    confidence_score = prediction[0][index]
-
-    # Display the prediction and confidence score on the frame
-    cv2.putText(frame, f"{class_name}: {confidence_score:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
-    # Display the resulting frame
-    cv2.imshow('Frame', frame)
-
-    # Press 'q' to exit the loop
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-
-# When everything done, release the capture
-cap.release()
-cv2.destroyAllWindows()
+    r = d.detect("NONE");

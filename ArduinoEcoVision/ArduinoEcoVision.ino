@@ -2,7 +2,8 @@
 #include <Servo.h> 
  
 
-Servo Pusher;
+Servo Pusher1;
+Servo Pusher2;
 Motor Band(3,4,5);
 
 
@@ -14,7 +15,8 @@ void setup() {
   Band.aus();
 	Serial.begin(9600);
 	Serial.println("Start...");
-  Pusher.attach(8);
+  Pusher1.attach(9);
+  Pusher2.attach(10);
 }
 
 static bool initialised =false; 
@@ -39,7 +41,14 @@ void loop()
         else if (cmd == 2)
         {
           int angle = Serial.readStringUntil(';').toInt(); 
-          Pusher.write(angle);
+          Pusher1.write(angle);
+          Serial.println("PSH1\n");
+        }
+        else if (cmd == 3)
+        {
+          int angle = Serial.readStringUntil(';').toInt(); 
+          Pusher2.write(angle);
+          Serial.println("PSH2\n");
         }
     }
     if (!initialised){
